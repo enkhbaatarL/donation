@@ -24,6 +24,7 @@ namespace donation_product
         }
 
         public IConfiguration Configuration { get; }
+        readonly string corsPolicy = "AllowAllOrigin";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -37,6 +38,13 @@ namespace donation_product
             {
                 c.SwaggerDoc("v1", new Info { Title = "Donation Product Service", Version = "v1"});
                 c.DescribeAllEnumsAsStrings();
+            });
+            services.AddCors(options =>
+            {
+                options.AddPolicy(corsPolicy, builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                });
             });
         }
 
@@ -60,6 +68,7 @@ namespace donation_product
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1");
             });
+            app.UseCors(corsPolicy);
         }
     }
 }
